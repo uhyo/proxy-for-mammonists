@@ -48,6 +48,10 @@ server.on("connect", (req, socket, head) => {
     conn.write(head);
   }
   socket.pipe(conn);
+  conn.on("error", (err) => {
+    console.error(err);
+    socket.end();
+  });
 });
 
 server.listen(8111, "0.0.0.0");
@@ -77,5 +81,6 @@ function checkCertificateIsNotLetsEncrypt(host, port) {
         }
       }
     );
+    checkConn.on("error", reject);
   });
 }
