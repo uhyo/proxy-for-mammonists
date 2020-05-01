@@ -7,10 +7,16 @@ const server = http.createServer((req, res) => {
   const u = new URL(req.url, `http://${req.headers.host}`);
 
   console.log(`proxying HTTP request to ${req.headers.host}`);
-  const proxyReq = http.request(u, (proxyRes) => {
-    res.writeHead(proxyRes.statusCode, proxyRes.headers);
-    proxyRes.pipe(res);
-  });
+  const proxyReq = http.request(
+    u,
+    {
+      method: req.method,
+    },
+    (proxyRes) => {
+      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      proxyRes.pipe(res);
+    }
+  );
   req.pipe(proxyReq);
 });
 
